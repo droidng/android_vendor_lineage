@@ -23,6 +23,8 @@
         <!-- Use new privacy indicators for location -->
 	<item>privacy/location_indicators_enabled=true</item>
 	
+        <item>activity_manager/use_compaction=true</item>
+
         <!--
             Device Personalization Services (AiAi)
         -->
