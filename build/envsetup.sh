@@ -1281,3 +1281,6 @@ function pushall() {
 	cd - 1>/dev/null # cd back
     done
 }
+
+# Disable ABI checking
+export SKIP_ABI_CHECKS=true
