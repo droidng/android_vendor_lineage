@@ -20,6 +20,10 @@ Additional LineageOS functions:
 - repopick:        Utility to fetch changes from Gerrit.
 - installboot:     Installs a boot.img to the connected device.
 - installrecovery: Installs a recovery.img to the connected device.
+
+Additional Materium functions:
+- materiumremote:  Add git remote for Materium GitHub.
+- ghfork:          Fork repo from Lineage, or if branch-repo combo doesn't exist, create one.
 EOF
 }
 
@@ -289,7 +293,7 @@ function materiumremote()
         echo ".git directory not found. Please run this from the root directory of the Android repository you wish to set up."
         return 1
     fi
-    git remote rm lineage 2> /dev/null
+    git remote rm materium 2> /dev/null
     local REMOTE=$(git config --get remote.github.projectname)
     local LINEAGE="true"
     if [ -z "$REMOTE" ]
@@ -994,4 +998,59 @@ function fixup_common_out_dir() {
         [ -L ${common_out_dir} ] && rm ${common_out_dir}
         mkdir -p ${common_out_dir}
     fi
+}
+
+if [ -z "$MAT_BRANCH" ]; then
+    MAT_BRANCH=vdk-devel
+fi
+
+function ghfork()
+{
+    if ! git rev-parse --git-dir &> /dev/null
+    then
+        echo ".git directory not found. Please run this from the root directory of the Android repository you wish to set up."
+        return 1
+    fi
+    local REMOTE=$(git config --get remote.github.projectname)
+    local LINEAGE="true"
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.aosp.projectname)
+        LINEAGE="false"
+    fi
+    if [ -z "$REMOTE" ]
+    then
+	echo "Failed to find repo name."
+	return 1
+    fi
+    git remote rm materium 2> /dev/null
+    local PFX="ProjectMaterium/"
+    if [ $LINEAGE = "false" ]
+    then
+        local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
+	local REPO=$PFX$PROJECT
+	gh repo create --public --disable-wiki --disable-issues ProjectMaterium/"$PROJECT"
+    else
+	local PROJECT=$(echo $REMOTE | sed -e "s#LineageOS/##g")
+	local REPO=$PFX$PROJECT
+	gh repo fork --org=ProjectMaterium --remote=false --clone=false LineageOS/"$PROJECT"
+    fi
+    git remote add materium ssh://git@github.com/"$REPO"
+    git push materium HEAD:refs/heads/"$MAT_BRANCH"
+    gh repo edit "$REPO" --default-branch="$MAT_BRANCH"
+    cd "$ANDROID_BUILD_TOP/android"
+    for branch in $(git ls-remote --heads ssh://git@github.com/"$REPO" | cut -f2); do 
+	if [ "$branch" != "refs/heads/$MAT_BRANCH" ]; then
+            echo Deleting "$branch"
+            git push --delete ssh://git@github.com/"$REPO" "$branch"
+	fi
+    done
+    cd -
+
+    echo -n "Repo '$REPO' created"
+    if [ $LINEAGE = "true" ]
+    then
+        echo -n " (forked from 'LineageOS/$PROJECT')"
+    fi
+    echo ", pushed HEAD as '$MAT_BRANCH', set it to default branch, created remote 'materium' and deleted all irrelevant branches from remote."
 }
