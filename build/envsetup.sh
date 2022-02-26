@@ -82,7 +82,7 @@ function breakfast()
                 variant="userdebug"
             fi
 
-            lunch lineage_$target-$variant
+            lunch materium_$target-$variant
         fi
     fi
     return $?
@@ -251,6 +251,18 @@ function lineageremote()
         REMOTE=$(git config --get remote.caf.projectname)
         LINEAGE="false"
     fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.vdk.projectname)
+        LINEAGE="true"
+        local PFX="LineageOS/"
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.materium.projectname)
+        LINEAGE="true"
+        local PFX="LineageOS/"
+    fi
 
     if [ $LINEAGE = "false" ]
     then
@@ -268,6 +280,44 @@ function lineageremote()
         git remote add lineage ssh://$LINEAGE_USER@review.lineageos.org:29418/$PFX$PROJECT
     fi
     echo "Remote 'lineage' created"
+}
+
+function materiumremote()
+{
+    if ! git rev-parse --git-dir &> /dev/null
+    then
+        echo ".git directory not found. Please run this from the root directory of the Android repository you wish to set up."
+        return 1
+    fi
+    git remote rm lineage 2> /dev/null
+    local REMOTE=$(git config --get remote.github.projectname)
+    local LINEAGE="true"
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.aosp.projectname)
+        LINEAGE="false"
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.caf.projectname)
+        LINEAGE="false"
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.vdk.projectname)
+        LINEAGE="true"
+    fi
+
+    if [ $LINEAGE = "false" ]
+    then
+        local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
+    else
+	local PROJECT=$(echo $REMOTE | sed -e "s#LineageOS/##g")
+    fi
+    local PFX="ProjectMaterium/"
+
+    git remote add materium ssh://git@github.com/$PFX$PROJECT
+    echo "Remote 'materium' created"
 }
 
 function aospremote()
@@ -333,6 +383,10 @@ function githubremote()
         REMOTE=$(git config --get remote.caf.projectname)
     fi
 
+    if [ -z "$REMOTE" ]
+    then
+	echo "Failed to find remote."
+    fi
     local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
 
     git remote add github https://github.com/LineageOS/$PROJECT
@@ -920,7 +974,7 @@ alias cmkap='dopush cmka'
 
 function repopick() {
     T=$(gettop)
-    $T/vendor/lineage/build/tools/repopick.py $@
+    $T/vendor/materium/build/tools/repopick.py $@
 }
 
 function fixup_common_out_dir() {
