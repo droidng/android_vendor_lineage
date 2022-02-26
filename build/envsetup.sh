@@ -24,6 +24,7 @@ Additional LineageOS functions:
 Additional Materium functions:
 - materiumremote:  Add git remote for Materium GitHub.
 - ghfork:          Fork repo from Lineage, or if branch-repo combo doesn't exist, create one.
+- eatwrp:          eat, but for TWRP.
 EOF
 }
 
@@ -1053,4 +1054,36 @@ function ghfork()
         echo -n " (forked from 'LineageOS/$PROJECT')"
     fi
     echo ", pushed HEAD as '$MAT_BRANCH', set it to default branch, created remote 'materium' and deleted all irrelevant branches from remote."
+}
+
+function eatwrp()
+{
+    if [ "$OUT" ] ; then
+        ZIPPATH=`ls -tr "$OUT"/lineage-*.zip | tail -1`
+        if [ ! -f $ZIPPATH ] ; then
+            echo "Nothing to eat"
+            return 1
+        fi
+        echo "Waiting for device..."
+        adb wait-for-device-recovery
+        echo "Found device"
+        if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD"); then
+            echo "Rebooting to sideload for install"
+            adb reboot recovery
+	    adb wait-for-recovery
+	    adb shell twrp wipe cache
+	    adb shell twrp wipe dalvik
+	    adb shell twrp sideload
+            adb wait-for-sideload
+            adb sideload $ZIPPATH
+	    adb wait-for-recovery
+	    adb shell twrp reboot
+        else
+            echo "The connected device does not appear to be $LINEAGE_BUILD, run away!"
+        fi
+        return $?
+    else
+        echo "Nothing to eat"
+        return 1
+    fi
 }
