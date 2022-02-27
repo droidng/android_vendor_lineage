@@ -25,6 +25,9 @@ Additional Materium functions:
 - materiumremote:  Add git remote for Materium GitHub.
 - ghfork:          Fork repo from Lineage, or if branch-repo combo doesn't exist, create one.
 - eatwrp:          eat, but for TWRP.
+- losfetch:        Fetch current repo from Lineage.
+- losmerge:        Merge current repo with Lineage.
+- push:            Push new commits to Materium github.
 EOF
 }
 
@@ -387,10 +390,23 @@ function githubremote()
     then
         REMOTE=$(git config --get remote.caf.projectname)
     fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.vdk.projectname)
+        LINEAGE="true"
+        local PFX="LineageOS/"
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.materium.projectname)
+        LINEAGE="true"
+        local PFX="LineageOS/"
+    fi
 
     if [ -z "$REMOTE" ]
     then
 	echo "Failed to find remote."
+	exit 1
     fi
     local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
 
@@ -1083,4 +1099,32 @@ function eatwrp()
         echo "Nothing to eat"
         return 1
     fi
+}
+
+function losfetch() {
+    local REMOTE=$(git config --get remote.materium.projectname)
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.vdk.projectname)
+    fi
+    if [ -z "$REMOTE" ]
+    then
+	echo "Is this an Materium repo?"
+	return 1
+    fi
+    local REMOTE=$(git config --get remote.github.url)
+    if [ -z "$REMOTE" ]
+    then
+        githubremote
+    fi
+    git fetch github lineage-19.0
+}
+
+function losmerge() {
+    losfetch || return 0
+    git merge FETCH_HEAD || zsh
+}
+
+function push() {
+    git push materium HEAD:"$MAT_BRANCH" $@
 }
