@@ -28,6 +28,8 @@ Additional Materium functions:
 - losfetch:        Fetch current repo from Lineage.
 - losmerge:        Merge current repo with Lineage.
 - push:            Push new commits to Materium github.
+- pushall:         Push new commits from all repos to Materium github.
+- mergeall:        Merge all repos with Lineage.
 EOF
 }
 
@@ -1017,8 +1019,19 @@ function fixup_common_out_dir() {
     fi
 }
 
+# active branch
 if [ -z "$MAT_BRANCH" ]; then
     MAT_BRANCH=vdk-devel
+fi
+
+# device branch
+if [ -z "$DEV_BRANCH" ]; then
+    DEV_BRANCH=materium-v2
+fi
+
+# vdk branch
+if [ -z "$VDK_BRANCH" ]; then
+    VDK_BRANCH=vdk-devel
 fi
 
 function ghfork()
@@ -1126,5 +1139,48 @@ function losmerge() {
 }
 
 function push() {
-    git push materium HEAD:"$MAT_BRANCH" $@
+    local REMOTE=$(git config --get remote.materium.projectname)
+    local RH=materium
+    local BRNCH=$MAT_BRANCH
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.vdk.projectname)
+	RH=vdk
+	BRNCH=$VDK_BRANCH
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.mat-devices.projectname)
+	RH=mat-devices
+	BRNCH=$DEV_BRANCH
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.mat-infra.projectname)
+	RH=mat-infra
+	BRNCH=master
+    fi
+    if [ -z "$REMOTE" ]
+    then
+	echo "Is this an Materium repo?"
+	return 1
+    fi
+    git push "$RH" HEAD:"$BRNCH" $@
+}
+
+function mergeall() {
+    for i in $(repo forall -c pwd); do  # For every repo project..
+        if [[ "$i" != "$ANDROID_BUILD_TOP/materium"* ]] && # except materium/*...
+	[[ "$i" != "$ANDROID_BUILD_TOP/packages/apps/MtkFMRadio" ]]; then  # and MtkFMRadio...
+	# which are no forks..
+	cd $i; pwd; losmerge; cd - 1>/dev/null # merge from Lineage.
+    fi; done
+}
+
+function pushall() {
+    for i in $(repo forall -c pwd); do  # For every repo project..
+	cd $i; pwd # cd
+	push $@ # push
+	cd - 1>/dev/null # cd back
+    done
 }
