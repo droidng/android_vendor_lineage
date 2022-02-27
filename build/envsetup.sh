@@ -1068,11 +1068,8 @@ function eatwrp()
         adb wait-for-device-recovery
         echo "Found device"
         if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD"); then
-            echo "Rebooting to sideload for install"
-            adb reboot recovery
+            echo "Please reboot to recovery for install"
 	    adb wait-for-recovery
-	    adb shell twrp wipe cache
-	    adb shell twrp wipe dalvik
 	    adb shell twrp sideload
             adb wait-for-sideload
             adb sideload $ZIPPATH
