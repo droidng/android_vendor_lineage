@@ -1157,6 +1157,12 @@ function push() {
     local BRNCH=$MAT_BRANCH
     if [ -z "$REMOTE" ]
     then
+        REMOTE=$(git config --get remote.mat-infra.projectname)
+	RH=mat-infra
+	BRNCH=master
+    fi
+    if [ -z "$REMOTE" ]
+    then
         REMOTE=$(git config --get remote.vdk.projectname)
 	RH=vdk
 	BRNCH=$VDK_BRANCH
@@ -1166,12 +1172,6 @@ function push() {
         REMOTE=$(git config --get remote.mat-devices.projectname)
 	RH=mat-devices
 	BRNCH=$DEV_BRANCH
-    fi
-    if [ -z "$REMOTE" ]
-    then
-        REMOTE=$(git config --get remote.mat-infra.projectname)
-	RH=mat-infra
-	BRNCH=master
     fi
     if [ -z "$REMOTE" ]
     then
