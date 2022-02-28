@@ -1045,6 +1045,11 @@ if [ -z "$VDK_BRANCH" ]; then
     VDK_BRANCH=vdk-devel
 fi
 
+# lineage branch
+if [ -z "$LOS_BRANCH" ]; then
+    LOS_BRANCH=lineage-19.0
+fi
+
 function ghfork()
 {
     if ! git rev-parse --git-dir &> /dev/null
@@ -1143,7 +1148,12 @@ function losfetch() {
     then
         githubremote
     fi
-    git fetch github lineage-19.0
+    local REMOTE=$(git config --get remote.github.url)
+    if ! git ls-remote --heads "$REMOTE" | cut -f2 | grep -q "$LOS_BRANCH"; then
+        echo "LOS has no branch for this repo"
+	return 1
+    fi
+    git fetch github "$LOS_BRANCH"
 }
 
 function losmerge() {
@@ -1184,7 +1194,8 @@ function push() {
 function mergeall() {
     for i in $(repo forall -c pwd); do  # For every repo project..
         if [[ "$i" != "$ANDROID_BUILD_TOP/materium"* ]] && # except materium/*...
-	[[ "$i" != "$ANDROID_BUILD_TOP/packages/apps/MtkFMRadio" ]]; then  # and MtkFMRadio...
+	[[ "$i" != "$ANDROID_BUILD_TOP/packages/apps/MtkFMRadio" ]] &&  # and MtkFMRadio...
+	[[ "$i" != "$ANDROID_BUILD_TOP/device/mediatek/sepolicy_vndr" ]]; then  # and sepolicy_vndr...
 	# which are no forks..
 	cd $i; pwd; losmerge; cd - 1>/dev/null # merge from Lineage.
     fi; done
