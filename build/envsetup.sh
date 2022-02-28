@@ -1097,9 +1097,7 @@ function eatwrp()
         adb wait-for-device-recovery
         echo "Found device"
         if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD"); then
-            echo "Please reboot to recovery for install"
-	    adb wait-for-recovery
-	    adb shell twrp sideload
+            echo "Please reboot to recovery and start sideload for install"
             adb wait-for-sideload
             adb sideload $ZIPPATH
 	    adb wait-for-recovery
