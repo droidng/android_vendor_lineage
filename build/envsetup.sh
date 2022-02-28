@@ -849,6 +849,17 @@ function _adb_connected {
     return 1
 };
 
+function _adb_recovery_connected {
+    {
+        if [[ "$(adb get-state)" == recovery ]]
+        then
+            return 0
+        fi
+    } 2>/dev/null
+
+    return 1
+};
+
 # Credit for color strip sed: http://goo.gl/BoIcm
 function dopush()
 {
@@ -1093,18 +1104,22 @@ function eatwrp()
             echo "Nothing to eat"
             return 1
         fi
+        if [[ "$(adb get-state)" != sideload ]]
+        then
         echo "Waiting for device..."
         adb wait-for-device-recovery
         echo "Found device"
-        if (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD"); then
+        if ! (adb shell getprop ro.lineage.device | grep -q "$LINEAGE_BUILD"); then
+            echo "The connected device does not appear to be $LINEAGE_BUILD, run away!"
+	    return 1
+        else
             echo "Please reboot to recovery and start sideload for install"
+	fi
+	fi
             adb wait-for-sideload
             adb sideload $ZIPPATH
 	    adb wait-for-recovery
 	    adb shell twrp reboot
-        else
-            echo "The connected device does not appear to be $LINEAGE_BUILD, run away!"
-        fi
         return $?
     else
         echo "Nothing to eat"
