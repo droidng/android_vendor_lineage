@@ -1185,6 +1185,12 @@ function push() {
     fi
     if [ -z "$REMOTE" ]
     then
+        REMOTE=$(git config --get remote.devices.projectname)
+	RH=devices
+	BRNCH=$DEV_BRANCH
+    fi
+    if [ -z "$REMOTE" ]
+    then
 	echo "Is this an Materium repo?"
 	return 1
     fi
