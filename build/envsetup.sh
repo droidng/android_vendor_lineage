@@ -1032,7 +1032,7 @@ function fixup_common_out_dir() {
 
 # active branch
 if [ -z "$MAT_BRANCH" ]; then
-    MAT_BRANCH=vdk-devel
+    MAT_BRANCH=materium-v2
 fi
 
 # device branch
