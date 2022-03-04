@@ -30,6 +30,7 @@ Additional Materium functions:
 - push:            Push new commits to Materium github.
 - pushall:         Push new commits from all repos to Materium github.
 - mergeall:        Merge all repos with Lineage.
+- pull:            Pull new commits from Materium github.
 EOF
 }
 
@@ -1195,6 +1196,42 @@ function push() {
 	return 1
     fi
     git push "$RH" HEAD:"$BRNCH" $@
+}
+
+function pull() {
+    local REMOTE=$(git config --get remote.materium.projectname)
+    local RH=materium
+    local BRNCH=$MAT_BRANCH
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.mat-infra.projectname)
+	RH=mat-infra
+	BRNCH=master
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.vdk.projectname)
+	RH=vdk
+	BRNCH=$VDK_BRANCH
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.mat-devices.projectname)
+	RH=mat-devices
+	BRNCH=$DEV_BRANCH
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.devices.projectname)
+	RH=devices
+	BRNCH=$DEV_BRANCH
+    fi
+    if [ -z "$REMOTE" ]
+    then
+	echo "Is this an Materium repo?"
+	return 1
+    fi
+    git pull "$RH" "$BRNCH" $@
 }
 
 function mergeall() {
