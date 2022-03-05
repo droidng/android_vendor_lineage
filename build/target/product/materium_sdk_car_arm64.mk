@@ -12,14 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$(call inherit-product, build/target/product/aosp_arm64.mk)
-$(call inherit-product, build/target/product/gsi_release.mk)
+include vendor/materium/build/target/product/lineage_generic_car_target.mk
 
-include vendor/materium/build/target/product/lineage_generic_target.mk
+$(call inherit-product, $(SRC_TARGET_DIR)/product/sdk_arm64.mk)
 
 TARGET_NO_KERNEL_OVERRIDE := true
 
-# Enable mainline checking
-PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
-
-PRODUCT_NAME := lineage_arm64
+PRODUCT_NAME := materium_sdk_car_arm64

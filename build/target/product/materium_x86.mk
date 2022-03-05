@@ -23,4 +23,4 @@ TARGET_NO_KERNEL_OVERRIDE := true
 # Enable mainline checking
 PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
 
-PRODUCT_NAME := lineage_x86
+PRODUCT_NAME := materium_x86

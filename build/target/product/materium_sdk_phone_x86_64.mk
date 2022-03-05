@@ -20,5 +20,5 @@ include vendor/materium/build/target/product/lineage_generic_target.mk
 PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
 
 # Overrides
-PRODUCT_NAME := lineage_sdk_phone_x86_64
+PRODUCT_NAME := materium_sdk_phone_x86_64
 PRODUCT_MODEL := LineageOS Android SDK built for x86_64

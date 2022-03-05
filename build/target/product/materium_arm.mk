@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$(call inherit-product, device/google/atv/products/aosp_tv_arm.mk)
+$(call inherit-product, build/target/product/aosp_arm.mk)
+$(call inherit-product, build/target/product/gsi_release.mk)
 
-include vendor/materium/build/target/product/lineage_generic_tv_target.mk
+include vendor/materium/build/target/product/lineage_generic_target.mk
 
 TARGET_NO_KERNEL_OVERRIDE := true
 TARGET_USES_64_BIT_BINDER := true
 
-PRODUCT_NAME := lineage_tv_arm
+# Enable mainline checking
+PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
 
-PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS :=
+PRODUCT_NAME := materium_arm
