@@ -341,7 +341,28 @@ endif
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
 -include vendor/materium/config/partner_gms.mk
 
+# If blobs are not cloned (FLOSS build), disable
+ifeq (,$(wildcard ./external/faceunlock/Android.bp))
+TARGET_FACE_UNLOCK_SUPPORTED ?= false
+endif
+# If the device isn't arm64, disable
+ifneq ($(TARGET_ARCH), arm64)
+TARGET_FACE_UNLOCK_SUPPORTED ?= false
+endif
+# Otherwise enable
 TARGET_FACE_UNLOCK_SUPPORTED ?= true
+# Perform sanity checks
+ifeq (,$(wildcard ./external/faceunlock/Android.bp))
+ifeq ($(TARGET_FACE_UNLOCK_SUPPORTED),true)
+$(error, Face unlock vendor missing)
+endif
+endif
+ifneq ($(TARGET_ARCH), arm64)
+ifeq ($(TARGET_FACE_UNLOCK_SUPPORTED),true)
+$(error, Face unlock is not supported on this arch)
+endif
+endif
+# Actual logic
 ifeq ($(TARGET_FACE_UNLOCK_SUPPORTED),true)
 PRODUCT_PACKAGES += \
     FaceUnlockService
