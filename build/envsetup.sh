@@ -26,6 +26,7 @@ Additional Materium functions:
 - ghfork:          Fork repo from Lineage, or if branch-repo combo doesn't exist, create one.
 - eatwrp:          eat, but for TWRP.
 - losfetch:        Fetch current repo from Lineage.
+- aospfetch:       Fetch current repo from AOSP.
 - losmerge:        Merge current repo with Lineage.
 - push:            Push new commits to Materium github.
 - pushall:         Push new commits from all repos to Materium github.
@@ -1051,6 +1052,11 @@ if [ -z "$LOS_BRANCH" ]; then
     LOS_BRANCH=lineage-19.0
 fi
 
+# aosp tag
+if [ -z "$AOSP_TAG" ]; then
+    AOSP_TAG=$(python3 $ANDROID_BUILD_TOP/vendor/materium/tools/get-aosp-tag.py)
+fi
+
 function ghfork()
 {
     if ! git rev-parse --git-dir &> /dev/null
@@ -1150,11 +1156,33 @@ function losfetch() {
         githubremote
     fi
     local REMOTE=$(git config --get remote.github.url)
-    if ! git ls-remote --heads "$REMOTE" | cut -f2 | grep -q "$LOS_BRANCH"; then
-        echo "LOS has no branch for this repo"
-	return 1
+    if ! git ls-remote --heads "$REMOTE" 2>/dev/null | cut -f2 | grep -q "$LOS_BRANCH"; then
+        echo "LOS has no branch for this repo, fetching from AOSP"
+	aospfetch
+	return 0
     fi
     git fetch github "$LOS_BRANCH"
+}
+
+function aospfetch() {
+    local REMOTE=$(git config --get remote.materium.projectname)
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.vdk.projectname)
+    fi
+    if [ -z "$REMOTE" ]
+    then
+	echo "Is this an Materium repo?"
+	return 1
+    fi
+    local REMOTE=$(git config --get remote.aosp.url)
+    if [ -z "$REMOTE" ]
+    then
+        aospremote
+    fi
+    local REMOTE=$(git config --get remote.aosp.url)
+    local AOSP_TAG=$(python3 $ANDROID_BUILD_TOP/vendor/materium/tools/get-aosp-tag.py)
+    git fetch aosp "$AOSP_TAG"
 }
 
 function losmerge() {
@@ -1238,7 +1266,9 @@ function mergeall() {
     for i in $(repo forall -c pwd); do  # For every repo project..
         if [[ "$i" != "$ANDROID_BUILD_TOP/materium"* ]] && # except materium/*...
 	[[ "$i" != "$ANDROID_BUILD_TOP/packages/apps/MtkFMRadio" ]] &&  # and MtkFMRadio...
-	[[ "$i" != "$ANDROID_BUILD_TOP/device/mediatek/sepolicy_vndr" ]]; then  # and sepolicy_vndr...
+	[[ "$i" != "$ANDROID_BUILD_TOP/device/mediatek/sepolicy_vndr" ]] &&  # and sepolicy_vndr...
+	[[ "$i" != "$ANDROID_BUILD_TOP/packages/resources/MateriumTranslations" ]] &&  # and MateriumTranslations...
+	[[ "$i" != "$ANDROID_BUILD_TOP/external/zlib-ng" ]]; then  # and zlib-nh...
 	# which are no forks..
 	cd $i; pwd; losmerge; cd - 1>/dev/null # merge from Lineage.
     fi; done
