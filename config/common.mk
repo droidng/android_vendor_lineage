@@ -349,8 +349,8 @@ endif
 ifneq ($(TARGET_ARCH), arm64)
 TARGET_FACE_UNLOCK_SUPPORTED ?= false
 endif
-# Otherwise enable
-TARGET_FACE_UNLOCK_SUPPORTED ?= true
+# Otherwise disable anyway
+TARGET_FACE_UNLOCK_SUPPORTED ?= false
 # Perform sanity checks
 ifeq (,$(wildcard ./external/faceunlock/Android.bp))
 ifeq ($(TARGET_FACE_UNLOCK_SUPPORTED),true)
