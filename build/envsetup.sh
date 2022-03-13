@@ -1049,7 +1049,7 @@ fi
 
 # lineage branch
 if [ -z "$LOS_BRANCH" ]; then
-    LOS_BRANCH=lineage-19.0
+    LOS_BRANCH=lineage-19.1
 fi
 
 # aosp tag
