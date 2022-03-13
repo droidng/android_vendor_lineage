@@ -410,7 +410,7 @@ function githubremote()
     if [ -z "$REMOTE" ]
     then
 	echo "Failed to find remote."
-	exit 1
+	return 1
     fi
     local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
 
