@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$(call inherit-product, build/target/product/aosp_arm64.mk)
-$(call inherit-product, build/target/product/gsi_release.mk)
+$(call inherit-product, device/generic/common/gsi_arm64.mk)
 
 include vendor/materium/build/target/product/lineage_generic_target.mk
 
+PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+
 TARGET_NO_KERNEL_OVERRIDE := true
 
-# Enable mainline checking
-PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
-
-PRODUCT_NAME := materium_arm64
+PRODUCT_NAME := materium_gsi_arm64

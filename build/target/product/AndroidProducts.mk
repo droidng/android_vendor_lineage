@@ -15,10 +15,10 @@
 #
 
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/materium_arm.mk \
-    $(LOCAL_DIR)/materium_arm64.mk \
-    $(LOCAL_DIR)/materium_x86.mk \
-    $(LOCAL_DIR)/materium_x86_64.mk \
+    $(LOCAL_DIR)/materium_gsi_arm.mk \
+    $(LOCAL_DIR)/materium_gsi_arm64.mk \
+    $(LOCAL_DIR)/materium_gsi_x86.mk \
+    $(LOCAL_DIR)/materium_gsi_x86_64.mk \
     $(LOCAL_DIR)/materium_tv_arm.mk \
     $(LOCAL_DIR)/materium_tv_arm64.mk \
     $(LOCAL_DIR)/materium_tv_x86.mk \
@@ -31,10 +31,10 @@ PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/materium_sdk_tv_x86.mk
 
 COMMON_LUNCH_CHOICES := \
-    materium_arm-userdebug \
-    materium_arm64-userdebug \
-    materium_x86-userdebug \
-    materium_x86_64-userdebug \
+    materium_gsi_arm-userdebug \
+    materium_gsi_arm64-userdebug \
+    materium_gsi_x86-userdebug \
+    materium_gsi_x86_64-userdebug \
     materium_tv_arm-userdebug \
     materium_tv_arm64-userdebug \
     materium_tv_x86-userdebug \

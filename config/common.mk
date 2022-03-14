@@ -343,6 +343,8 @@ ifneq ($(PRODUCT_DEFAULT_DEV_CERTIFICATE),build/target/product/security/testkey)
 endif
 endif
 
+-include vendor/lineage-priv/keys/keys.mk
+
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
 -include vendor/materium/config/partner_gms.mk
 
