@@ -202,8 +202,13 @@ endif
 PRODUCT_DEXPREOPT_SPEED_APPS += \
     SystemUI
 
-PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/materium/overlay
-PRODUCT_PACKAGE_OVERLAYS += vendor/materium/overlay/common
+PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/materium/overlay/no-rro
+PRODUCT_PACKAGE_OVERLAYS += \
+    vendor/materium/overlay/common \
+    vendor/materium/overlay/no-rro
+
+PRODUCT_PACKAGES += \
+    TrebuchetOverlay
 
 PRODUCT_VERSION_MAJOR := 2
 PRODUCT_VERSION_MINOR := 0
