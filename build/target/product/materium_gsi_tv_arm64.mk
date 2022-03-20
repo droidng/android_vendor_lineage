@@ -18,6 +18,6 @@ include vendor/materium/build/target/product/lineage_generic_tv_target.mk
 
 TARGET_NO_KERNEL_OVERRIDE := true
 
-PRODUCT_NAME := materium_tv_arm64
+PRODUCT_NAME := materium_gsi_tv_arm64
 
 PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS :=
