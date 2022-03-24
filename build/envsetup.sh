@@ -35,6 +35,8 @@ Additional Materium functions:
 EOF
 }
 
+alias mka=m
+
 function mk_timer()
 {
     local start_time=$(date +"%s")
@@ -793,10 +795,6 @@ function lineagerebase() {
     echo "Cleaning up..."
     repo abandon tmprebase .
     cd $pwd
-}
-
-function mka() {
-    m -j "$@"
 }
 
 function cmka() {
