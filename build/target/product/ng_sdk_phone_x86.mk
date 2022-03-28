@@ -1,4 +1,4 @@
-# Copyright (C) 2018-2020 The LineageOS Project
+# Copyright (C) 2021 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$(call inherit-product, device/generic/common/gsi_arm.mk)
+$(call inherit-product, build/target/product/sdk_phone_x86.mk)
 
-include vendor/materium/build/target/product/lineage_generic_target.mk
+include vendor/droid-ng/build/target/product/lineage_generic_target.mk
 
-PRODUCT_USE_DYNAMIC_PARTITION_SIZE := true
+# Enable mainline checking
+PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
 
-TARGET_NO_KERNEL_OVERRIDE := true
-
-PRODUCT_NAME := materium_gsi_arm
+# Overrides
+PRODUCT_NAME := ng_sdk_phone_x86
+PRODUCT_MODEL := LineageOS Android SDK built for x86

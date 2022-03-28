@@ -1,4 +1,4 @@
-# Copyright (C) 2021 The LineageOS Project
+# Copyright (C) 2022 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$(call inherit-product, build/target/product/sdk_phone_x86.mk)
+include vendor/droid-ng/build/target/product/lineage_generic_tv_target.mk
 
-include vendor/materium/build/target/product/lineage_generic_target.mk
+$(call inherit-product, device/google/atv/products/sdk_atv_x86.mk)
+
+TARGET_USES_64_BIT_BINDER := true
+TARGET_NO_KERNEL_OVERRIDE := true
 
 # Enable mainline checking
 PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
 
 # Overrides
-PRODUCT_NAME := materium_sdk_phone_x86
-PRODUCT_MODEL := LineageOS Android SDK built for x86
+PRODUCT_NAME := ng_sdk_tv_x86
+PRODUCT_MODEL := LineageOS Android TV SDK built for x86

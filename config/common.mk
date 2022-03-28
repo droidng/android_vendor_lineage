@@ -1,7 +1,7 @@
 # Allow vendor/extra to override any property by setting it first
 $(call inherit-product-if-exists, vendor/extra/product.mk)
 
-PRODUCT_BRAND ?= ProjectMaterium
+PRODUCT_BRAND ?= droid-ng
 
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 
@@ -26,14 +26,14 @@ endif
 
 # Backup Tool
 PRODUCT_COPY_FILES += \
-    vendor/materium/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
-    vendor/materium/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions
+    vendor/droid-ng/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
+    vendor/droid-ng/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions
 
 ifneq ($(strip $(AB_OTA_PARTITIONS) $(AB_OTA_POSTINSTALL_CONFIG)),)
 PRODUCT_COPY_FILES += \
-    vendor/materium/prebuilt/common/bin/backuptool_ab.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.sh \
-    vendor/materium/prebuilt/common/bin/backuptool_ab.functions:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.functions \
-    vendor/materium/prebuilt/common/bin/backuptool_postinstall.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_postinstall.sh
+    vendor/droid-ng/prebuilt/common/bin/backuptool_ab.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.sh \
+    vendor/droid-ng/prebuilt/common/bin/backuptool_ab.functions:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_ab.functions \
+    vendor/droid-ng/prebuilt/common/bin/backuptool_postinstall.sh:$(TARGET_COPY_OUT_SYSTEM)/bin/backuptool_postinstall.sh
 
 PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
     system/bin/backuptool_ab.sh \
@@ -48,15 +48,15 @@ endif
 
 # Lineage-specific broadcast actions whitelist
 PRODUCT_COPY_FILES += \
-    vendor/materium/config/permissions/lineage-sysconfig.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/lineage-sysconfig.xml
+    vendor/droid-ng/config/permissions/lineage-sysconfig.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/lineage-sysconfig.xml
 
 # Lineage-specific init rc file
 PRODUCT_COPY_FILES += \
-    vendor/materium/prebuilt/common/etc/init/init.lineage-system_ext.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-system_ext.rc
+    vendor/droid-ng/prebuilt/common/etc/init/init.lineage-system_ext.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-system_ext.rc
 
 # Enable Android Beam on all targets
 PRODUCT_COPY_FILES += \
-    vendor/materium/config/permissions/android.software.nfc.beam.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/android.software.nfc.beam.xml
+    vendor/droid-ng/config/permissions/android.software.nfc.beam.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/android.software.nfc.beam.xml
 
 # Enable SIP+VoIP on all targets
 PRODUCT_COPY_FILES += \
@@ -64,7 +64,7 @@ PRODUCT_COPY_FILES += \
 
 # Unlimited google photos backup
 PRODUCT_COPY_FILES += \
-    vendor/materium/prebuilt/google/etc/sysconfig/pixel_2016_exclusive.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/pixel_2016_exclusive.xml
+    vendor/droid-ng/prebuilt/google/etc/sysconfig/pixel_2016_exclusive.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/sysconfig/pixel_2016_exclusive.xml
 
 # Enable wireless Xbox 360 controller support
 PRODUCT_COPY_FILES += \
@@ -72,21 +72,21 @@ PRODUCT_COPY_FILES += \
 
 # This is Lineage!
 PRODUCT_COPY_FILES += \
-    vendor/materium/config/permissions/org.lineageos.android.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/org.lineageos.android.xml
+    vendor/droid-ng/config/permissions/org.lineageos.android.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/org.lineageos.android.xml
 
 # Enforce privapp-permissions whitelist
 PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
     ro.control_privapp_permissions=enforce
 
 # Include AOSP audio files
-include vendor/materium/config/aosp_audio.mk
+include vendor/droid-ng/config/aosp_audio.mk
 
 # Include Lineage audio files
-include vendor/materium/config/lineage_audio.mk
+include vendor/droid-ng/config/lineage_audio.mk
 
 ifneq ($(TARGET_DISABLE_LINEAGE_SDK), true)
 # Lineage SDK
-include vendor/materium/config/lineage_sdk_common.mk
+include vendor/droid-ng/config/lineage_sdk_common.mk
 endif
 
 # Do not include art debug targets
@@ -114,7 +114,7 @@ PRODUCT_PACKAGES += \
     Updater
 
 PRODUCT_COPY_FILES += \
-    vendor/materium/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
+    vendor/droid-ng/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
 
 # Themes
 PRODUCT_PACKAGES += \
@@ -156,7 +156,7 @@ PRODUCT_PACKAGES += \
     start-ssh
 
 PRODUCT_COPY_FILES += \
-    vendor/materium/prebuilt/common/etc/init/init.openssh.rc:$(TARGET_COPY_OUT_PRODUCT)/etc/init/init.openssh.rc
+    vendor/droid-ng/prebuilt/common/etc/init/init.openssh.rc:$(TARGET_COPY_OUT_PRODUCT)/etc/init/init.openssh.rc
 
 # rsync
 PRODUCT_PACKAGES += \
@@ -198,10 +198,10 @@ endif
 PRODUCT_DEXPREOPT_SPEED_APPS += \
     SystemUI
 
-PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/materium/overlay/no-rro
+PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/droid-ng/overlay/no-rro
 PRODUCT_PACKAGE_OVERLAYS += \
-    vendor/materium/overlay/common \
-    vendor/materium/overlay/no-rro
+    vendor/droid-ng/overlay/common \
+    vendor/droid-ng/overlay/no-rro
 
 PRODUCT_PACKAGES += \
     TrebuchetOverlay
@@ -210,12 +210,12 @@ PRODUCT_VERSION_MAJOR := 2
 PRODUCT_VERSION_MINOR := 0
 PRODUCT_VERSION_MAINTENANCE := 0
 PRODUCT_VERSION_CODENAME := Dragonfruit
-PRODUCT_MATERIUM_EXTRAVERSION := -BETA
+PRODUCT_DROIDNG_EXTRAVERSION := -BETA
 
 # todo: add logic here
-PRODUCT_MATERIUM_VARIANT :=
+PRODUCT_DROIDNG_VARIANT :=
 
-TARGET_BUILD_VARIANT_ID := $(PRODUCT_MATERIUM_VARIANT)$(PRODUCT_MATERIUM_EXTRAVERSION)
+TARGET_BUILD_VARIANT_ID := $(PRODUCT_DROIDNG_VARIANT)$(PRODUCT_DROIDNG_EXTRAVERSION)
 
 TARGET_VENDOR_SHOW_MAINTENANCE_VERSION ?= true
 
@@ -309,12 +309,12 @@ else
 endif
 
 PRODUCT_EXTRA_RECOVERY_KEYS += \
-    vendor/materium/build/target/product/security/materium
+    vendor/droid-ng/build/target/product/security/materium
 
 -include vendor/priv/keys.mk
 
 LINEAGE_DISPLAY_VERSION := $(LINEAGE_VERSION)
-MATERIUM_VERSION := $(LINEAGE_VERSION)
+DROID_NG_VERSION := $(LINEAGE_VERSION)
 
 ifneq ($(PRODUCT_DEFAULT_DEV_CERTIFICATE),)
 ifneq ($(PRODUCT_DEFAULT_DEV_CERTIFICATE),build/target/product/security/testkey)
@@ -342,23 +342,13 @@ endif
 -include vendor/lineage-priv/keys/keys.mk
 
 -include $(WORKSPACE)/build_env/image-auto-bits.mk
--include vendor/materium/config/partner_gms.mk
+-include vendor/droid-ng/config/partner_gms.mk
 
-# If blobs are not cloned (FLOSS build), disable
-ifeq (,$(wildcard ./external/faceunlock/Android.bp))
-TARGET_FACE_UNLOCK_SUPPORTED ?= false
-endif
-# If the device isn't arm64, disable
-ifneq ($(TARGET_ARCH), arm64)
-TARGET_FACE_UNLOCK_SUPPORTED ?= false
-endif
-# Otherwise disable anyway
+# Disable by default
 TARGET_FACE_UNLOCK_SUPPORTED ?= false
 # Perform sanity checks
 ifeq (,$(wildcard ./external/faceunlock/Android.bp))
-ifeq ($(TARGET_FACE_UNLOCK_SUPPORTED),true)
-$(error, Face unlock vendor missing)
-endif
+$(error, Face unlock vendor missing - please clone external/faceunlock)
 endif
 ifneq ($(TARGET_ARCH), arm64)
 ifeq ($(TARGET_FACE_UNLOCK_SUPPORTED),true)

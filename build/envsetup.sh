@@ -21,17 +21,17 @@ Additional LineageOS functions:
 - installboot:     Installs a boot.img to the connected device.
 - installrecovery: Installs a recovery.img to the connected device.
 
-Additional Materium functions:
-- materiumremote:  Add git remote for Materium GitHub.
+Additional droid-ng functions:
+- ngremote:        Add git remote for droid-ng GitHub.
 - ghfork:          Fork repo from Lineage, or if branch-repo combo doesn't exist, create one.
 - eatwrp:          eat, but for TWRP.
 - losfetch:        Fetch current repo from Lineage.
 - aospfetch:       Fetch current repo from AOSP.
 - losmerge:        Merge current repo with Lineage.
-- push:            Push new commits to Materium github.
-- pushall:         Push new commits from all repos to Materium github.
+- push:            Push new commits to droid-ng github.
+- pushall:         Push new commits from all repos to droid-ng github.
 - mergeall:        Merge all repos with Lineage.
-- pull:            Pull new commits from Materium github.
+- pull:            Pull new commits from droid-ng github.
 EOF
 }
 
@@ -94,7 +94,7 @@ function breakfast()
                 variant="userdebug"
             fi
 
-            lunch materium_$target-$variant
+            lunch ng_$target-$variant
         fi
     fi
     return $?
@@ -105,7 +105,7 @@ alias bib=breakfast
 function eat()
 {
     if [ "$OUT" ] ; then
-        ZIPPATH=`ls -tr "$OUT"/Materium-*.zip | tail -1`
+        ZIPPATH=`ls -tr "$OUT"/droid-ng-*.zip | tail -1`
         if [ ! -f $ZIPPATH ] ; then
             echo "Nothing to eat"
             return 1
@@ -271,7 +271,7 @@ function lineageremote()
     fi
     if [ -z "$REMOTE" ]
     then
-        REMOTE=$(git config --get remote.materium.projectname)
+        REMOTE=$(git config --get remote.ng.projectname)
         LINEAGE="true"
         local PFX="LineageOS/"
     fi
@@ -294,14 +294,14 @@ function lineageremote()
     echo "Remote 'lineage' created"
 }
 
-function materiumremote()
+function ngremote()
 {
     if ! git rev-parse --git-dir &> /dev/null
     then
         echo ".git directory not found. Please run this from the root directory of the Android repository you wish to set up."
         return 1
     fi
-    git remote rm materium 2> /dev/null
+    git remote rm ng 2> /dev/null
     local REMOTE=$(git config --get remote.github.projectname)
     local LINEAGE="true"
     if [ -z "$REMOTE" ]
@@ -326,10 +326,10 @@ function materiumremote()
     else
 	local PROJECT=$(echo $REMOTE | sed -e "s#LineageOS/##g")
     fi
-    local PFX="ProjectMaterium/"
+    local PFX="droid-ng/"
 
-    git remote add materium ssh://git@github.com/$PFX$PROJECT
-    echo "Remote 'materium' created"
+    git remote add ng ssh://git@github.com/$PFX$PROJECT
+    echo "Remote 'ng' created"
 }
 
 function aospremote()
@@ -402,7 +402,7 @@ function githubremote()
     fi
     if [ -z "$REMOTE" ]
     then
-        REMOTE=$(git config --get remote.materium.projectname)
+        REMOTE=$(git config --get remote.ng.projectname)
         LINEAGE="true"
         local PFX="LineageOS/"
     fi
@@ -1010,7 +1010,7 @@ alias cmkap='dopush cmka'
 
 function repopick() {
     T=$(gettop)
-    $T/vendor/materium/build/tools/repopick.py $@
+    $T/vendor/droid-ng/build/tools/repopick.py $@
 }
 
 function fixup_common_out_dir() {
@@ -1033,13 +1033,13 @@ function fixup_common_out_dir() {
 }
 
 # active branch
-if [ -z "$MAT_BRANCH" ]; then
-    MAT_BRANCH=materium-v2
+if [ -z "$NG_BRANCH" ]; then
+    NG_BRANCH=ng-v2
 fi
 
 # device branch
 if [ -z "$DEV_BRANCH" ]; then
-    DEV_BRANCH=materium-v2
+    DEV_BRANCH=ng-v2
 fi
 
 # vdk branch
@@ -1054,7 +1054,7 @@ fi
 
 # aosp tag
 if [ -z "$AOSP_TAG" ]; then
-    AOSP_TAG=$(python3 $ANDROID_BUILD_TOP/vendor/materium/tools/get-aosp-tag.py)
+    AOSP_TAG=$(python3 $ANDROID_BUILD_TOP/vendor/droid-ng/tools/get-aosp-tag.py)
 fi
 
 function ghfork()
@@ -1076,24 +1076,24 @@ function ghfork()
 	echo "Failed to find repo name."
 	return 1
     fi
-    git remote rm materium 2> /dev/null
-    local PFX="ProjectMaterium/"
+    git remote rm ng 2> /dev/null
+    local PFX="droid-ng/"
     if [ $LINEAGE = "false" ]
     then
         local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
 	local REPO=$PFX$PROJECT
-	gh repo create --public --disable-wiki --disable-issues ProjectMaterium/"$PROJECT"
+	gh repo create --public --disable-wiki --disable-issues droid-ng/"$PROJECT"
     else
 	local PROJECT=$(echo $REMOTE | sed -e "s#LineageOS/##g")
 	local REPO=$PFX$PROJECT
-	gh repo fork --org=ProjectMaterium --remote=false --clone=false LineageOS/"$PROJECT"
+	gh repo fork --org=droid-ng --remote=false --clone=false LineageOS/"$PROJECT"
     fi
-    git remote add materium ssh://git@github.com/"$REPO"
-    git push materium HEAD:refs/heads/"$MAT_BRANCH"
-    gh repo edit "$REPO" --default-branch="$MAT_BRANCH"
+    git remote add ng ssh://git@github.com/"$REPO"
+    git push ng HEAD:refs/heads/"$NG_BRANCH"
+    gh repo edit "$REPO" --default-branch="$NG_BRANCH"
     cd "$ANDROID_BUILD_TOP/android"
     for branch in $(git ls-remote --heads ssh://git@github.com/"$REPO" | cut -f2); do 
-	if [ "$branch" != "refs/heads/$MAT_BRANCH" ]; then
+	if [ "$branch" != "refs/heads/$NG_BRANCH" ]; then
             echo Deleting "$branch"
             git push --delete ssh://git@github.com/"$REPO" "$branch"
 	fi
@@ -1105,13 +1105,13 @@ function ghfork()
     then
         echo -n " (forked from 'LineageOS/$PROJECT')"
     fi
-    echo ", pushed HEAD as '$MAT_BRANCH', set it to default branch, created remote 'materium' and deleted all irrelevant branches from remote."
+    echo ", pushed HEAD as '$NG_BRANCH', set it to default branch, created remote 'ng' and deleted all irrelevant branches from remote."
 }
 
 function eatwrp()
 {
     if [ "$OUT" ] ; then
-        ZIPPATH=`ls -tr "$OUT"/Materium-*.zip | tail -1`
+        ZIPPATH=`ls -tr "$OUT"/droid-ng-*.zip | tail -1`
         if [ ! -f $ZIPPATH ] ; then
             echo "Nothing to eat"
             return 1
@@ -1140,14 +1140,14 @@ function eatwrp()
 }
 
 function losfetch() {
-    local REMOTE=$(git config --get remote.materium.projectname)
+    local REMOTE=$(git config --get remote.ng.projectname)
     if [ -z "$REMOTE" ]
     then
         REMOTE=$(git config --get remote.vdk.projectname)
     fi
     if [ -z "$REMOTE" ]
     then
-	echo "Is this an Materium repo?"
+	echo "Is this an droid-ng repo?"
 	return 1
     fi
     local REMOTE=$(git config --get remote.github.url)
@@ -1165,14 +1165,14 @@ function losfetch() {
 }
 
 function aospfetch() {
-    local REMOTE=$(git config --get remote.materium.projectname)
+    local REMOTE=$(git config --get remote.ng.projectname)
     if [ -z "$REMOTE" ]
     then
         REMOTE=$(git config --get remote.vdk.projectname)
     fi
     if [ -z "$REMOTE" ]
     then
-	echo "Is this an Materium repo?"
+	echo "Is this an droid-ng repo?"
 	return 1
     fi
     local REMOTE=$(git config --get remote.aosp.url)
@@ -1181,7 +1181,7 @@ function aospfetch() {
         aospremote
     fi
     local REMOTE=$(git config --get remote.aosp.url)
-    local AOSP_TAG=$(python3 $ANDROID_BUILD_TOP/vendor/materium/tools/get-aosp-tag.py)
+    local AOSP_TAG=$(python3 $ANDROID_BUILD_TOP/vendor/droid-ng/tools/get-aosp-tag.py)
     git fetch aosp "$AOSP_TAG"
 }
 
@@ -1191,9 +1191,9 @@ function losmerge() {
 }
 
 function push() {
-    local REMOTE=$(git config --get remote.materium.projectname)
-    local RH=materium
-    local BRNCH=$MAT_BRANCH
+    local REMOTE=$(git config --get remote.ng.projectname)
+    local RH=ng
+    local BRNCH=$NG_BRANCH
     if [ -z "$REMOTE" ]
     then
         REMOTE=$(git config --get remote.mat-infra.projectname)
@@ -1220,16 +1220,16 @@ function push() {
     fi
     if [ -z "$REMOTE" ]
     then
-	echo "Is this an Materium repo?"
+	echo "Is this an droid-ng repo?"
 	return 1
     fi
     git push "$RH" HEAD:"$BRNCH" $@
 }
 
 function pull() {
-    local REMOTE=$(git config --get remote.materium.projectname)
-    local RH=materium
-    local BRNCH=$MAT_BRANCH
+    local REMOTE=$(git config --get remote.ng.projectname)
+    local RH=ng
+    local BRNCH=$NG_BRANCH
     if [ -z "$REMOTE" ]
     then
         REMOTE=$(git config --get remote.mat-infra.projectname)
@@ -1256,7 +1256,7 @@ function pull() {
     fi
     if [ -z "$REMOTE" ]
     then
-	echo "Is this an Materium repo?"
+	echo "Is this an droid-ng repo?"
 	return 1
     fi
     git pull "$RH" "$BRNCH" $@
@@ -1264,12 +1264,12 @@ function pull() {
 
 function mergeall() {
     for i in $(repo forall -c pwd); do  # For every repo project..
-        if [[ "$i" != "$ANDROID_BUILD_TOP/materium"* ]] && # except materium/*...
+        if [[ "$i" != "$ANDROID_BUILD_TOP/ng"* ]] && # except ng/*...
 	[[ "$i" != "$ANDROID_BUILD_TOP/packages/apps/MtkFMRadio" ]] &&  # and MtkFMRadio...
 	[[ "$i" != "$ANDROID_BUILD_TOP/vendor/support" ]] &&  # and support...
 	[[ "$i" != "$ANDROID_BUILD_TOP/packages/apps/FaceUnlockService" ]] &&  # and FaceUnlockService...
 	[[ "$i" != "$ANDROID_BUILD_TOP/device/mediatek/sepolicy_vndr" ]] &&  # and sepolicy_vndr...
-	[[ "$i" != "$ANDROID_BUILD_TOP/packages/resources/MateriumTranslations" ]] &&  # and MateriumTranslations...
+	[[ "$i" != "$ANDROID_BUILD_TOP/packages/resources/NgTranslations" ]] &&  # and NgTranslations...
 	[[ "$i" != "$ANDROID_BUILD_TOP/external/zlib-ng" ]]; then  # and zlib-ng...
 	# which are no forks..
 	cd $i; pwd; losmerge; cd - 1>/dev/null # merge from Lineage.
