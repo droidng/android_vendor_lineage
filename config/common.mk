@@ -203,6 +203,10 @@ PRODUCT_PACKAGE_OVERLAYS += \
     vendor/droid-ng/overlay/common \
     vendor/droid-ng/overlay/no-rro
 
+# Translations
+PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += vendor/crowdin/overlay
+PRODUCT_PACKAGE_OVERLAYS += vendor/crowdin/overlay
+
 PRODUCT_PACKAGES += \
     TrebuchetOverlay
 
