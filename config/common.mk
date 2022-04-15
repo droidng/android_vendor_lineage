@@ -216,8 +216,17 @@ PRODUCT_VERSION_MAINTENANCE := 0
 PRODUCT_VERSION_CODENAME := Dragonfruit
 PRODUCT_DROIDNG_EXTRAVERSION := -BETA
 
-# todo: add logic here
 PRODUCT_DROIDNG_VARIANT :=
+ifeq ($(NG_BUILD_TYPE),gapps)
+ifeq ($(TARGET_GAPPS_ARCH),)
+$(warning TARGET_GAPPS_ARCH is not set, defaulting to arm64)
+TARGET_GAPPS_ARCH := arm64
+endif
+PRODUCT_DROIDNG_VARIANT := -GApps
+$(call inherit-product, vendor/gapps/$(TARGET_GAPPS_ARCH)/$(TARGET_GAPPS_ARCH)-vendor.mk)
+$(call inherit-product, vendor/gapps/common/common-vendor.mk)
+PRODUCT_PROPERTY_OVERRIDES += lineage.updater.uri=https://ota.droid-ng.eu.org/v1/gapps/{device}.json
+endif
 
 TARGET_BUILD_VARIANT_ID := $(PRODUCT_DROIDNG_VARIANT)$(PRODUCT_DROIDNG_EXTRAVERSION)
 
