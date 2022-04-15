@@ -234,7 +234,8 @@
      mode -->
     <string-array translatable="false" name="config_priorityOnlyDndExemptPackages">
         <!-- AOSP apps -->
-        <item>com.android.dialer</item>
+	<item>com.android.dialer</item>
+	<item>com.android.server.telecom</item>
         <item>com.android.systemui</item>
         <item>android</item>
         <!-- Google apps -->
@@ -306,7 +307,7 @@
     <string name="config_defaultAutofillService" translatable="false">com.google.android.gms/.autofill.service.AutofillService</string>
 
     <!-- Colon separated list of package names that should be granted DND access -->
-    <string name="config_defaultDndAccessPackages" translatable="false">com.google.android.gms:com.google.android.GoogleCamera:com.google.intelligence.sense:com.google.android.settings.intelligence</string>
+    <string name="config_defaultDndAccessPackages" translatable="false">com.google.android.gms:com.google.android.GoogleCamera:com.google.intelligence.sense:com.google.android.settings.intelligence:com.google.android.apps.wellbeing</string>
 
     <!-- Flag indicating whether we should enable smart battery. -->
     <bool name="config_smart_battery_available">true</bool>
@@ -403,4 +404,20 @@
 
     <!-- Exempt AiAi from privacy indicatorss, using the ambient audio slot -->
     <string name="config_systemAmbientAudioIntelligence">com.google.android.as</string>
+
+    <!-- Default service to enable with accessibility shortcut [DO NOT TRANSLATE] -->
+    <string name="config_defaultAccessibilityService" translatable="false">com.google.android.marvin.talkback/.TalkBackService</string>
+
+    <!-- The name of the package that will hold the speech recognizer role by default. -->
+    <string name="config_systemSpeechRecognizer" translatable="false">com.google.android.tts</string>
+
+    <!-- The name of the package that will hold the wellbeing role. -->
+    <string name="config_systemWellbeing" translatable="false">com.google.android.apps.wellbeing</string>
+
+    <!-- List containing the allowed install sources for accessibility service. -->
+    <string-array name="config_accessibility_allowed_install_source" translatable="false">
+	<item>com.android.vending</item>
+	<item>org.fdroid.fdroid.privileged</item>
+	<item>com.aurora.services</item>
+    </string-array>
 </resources>
