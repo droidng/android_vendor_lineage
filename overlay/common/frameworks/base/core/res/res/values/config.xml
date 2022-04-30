@@ -101,7 +101,7 @@
          on the device.
          Example: "com.android.wellbeing"
      -->
-    <string name="config_defaultWellbeingPackage">org.eu.droid_ng.wellbeing</string>
+    <string name="config_defaultWellbeingPackage">com.google.android.apps.wellbeing</string>
 
     <!-- List of packages that can use the Conversation space for their category messages
     notifications until they target R -->

@@ -120,10 +120,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     vendor/droid-ng/prebuilt/common/etc/init/init.lineage-updater.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.lineage-updater.rc
 
-# NG packages
-PRODUCT_PACKAGES += \
-    Wellbeing
-
 # Themes
 PRODUCT_PACKAGES += \
     LineageThemesStub \
