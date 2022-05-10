@@ -3,8 +3,7 @@ $(call inherit-product, vendor/droid-ng/config/common_full.mk)
 
 # Required packages
 PRODUCT_PACKAGES += \
-    LatinIME \
-    NavigationBarMode2ButtonOverlay
+    LatinIME
 
 # Include Lineage LatinIME dictionaries
 PRODUCT_PACKAGE_OVERLAYS += vendor/droid-ng/overlay/dictionaries
