@@ -5,3 +5,5 @@ include vendor/lineage/config/BoardConfigQcom.mk
 endif
 
 include vendor/lineage/config/BoardConfigSoong.mk
+
+include vendor/droid-ng/config/BoardConfig.mk

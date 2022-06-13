@@ -22,6 +22,7 @@ Additional LineageOS functions:
 - installboot:     Installs a boot.img to the connected device.
 - installrecovery: Installs a recovery.img to the connected device.
 EOF
+__print_ng_functions_help
 }
 
 function mk_timer()
@@ -83,7 +84,7 @@ function breakfast()
                 variant="userdebug"
             fi
 
-            lunch lineage_$target-$variant
+            lunch ng_$target-$variant
         fi
     fi
     return $?
@@ -240,8 +241,15 @@ function lineageremote()
         return 1
     fi
     git remote rm lineage 2> /dev/null
-    local REMOTE=$(git config --get remote.github.projectname)
+    local REMOTE=$(git config --get remote.ng.projectname)
     local LINEAGE="true"
+    if [ ! -z "$REMOTE" ]
+    then
+        local PFX="LineageOS/"
+    else
+        REMOTE=$(git config --get remote.github.projectname)
+        LINEAGE="true"
+    fi
     if [ -z "$REMOTE" ]
     then
         REMOTE=$(git config --get remote.aosp.projectname)
@@ -327,14 +335,30 @@ function githubremote()
         return 1
     fi
     git remote rm github 2> /dev/null
-    local REMOTE=$(git config --get remote.aosp.projectname)
-
+    local REMOTE=$(git config --get remote.ng.projectname)
+    local LINEAGE="true"
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.github.projectname | cut -b 11-)
+        LINEAGE="true"
+    fi
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE=$(git config --get remote.aosp.projectname)
+        LINEAGE="false"
+    fi
     if [ -z "$REMOTE" ]
     then
         REMOTE=$(git config --get remote.caf.projectname)
+        LINEAGE="false"
     fi
 
-    local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
+    if [ $LINEAGE = "false" ]
+    then
+        local PROJECT=$(echo $REMOTE | sed -e "s#platform/#android/#g; s#/#_#g")
+    else
+        local PROJECT=$REMOTE
+    fi
 
     git remote add github https://github.com/LineageOS/$PROJECT
     echo "Remote 'github' created"
@@ -699,7 +723,7 @@ function lineagerebase() {
         return
     fi
     cd $dir
-    repo=$(cat .git/config  | grep git://github.com | awk '{ print $NF }' | sed s#git://github.com/##g)
+    repo=$(cat .git/config  | grep git://github.com | awk '{ print $NF }' | sed s"#git://github.com/##g")
     echo "Starting branch..."
     repo start tmprebase .
     echo "Bringing it up to date..."
@@ -947,3 +971,5 @@ function fixup_common_out_dir() {
         mkdir -p ${common_out_dir}
     fi
 }
+
+source vendor/droid-ng/build/envsetup.sh
